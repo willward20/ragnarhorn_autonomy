@@ -24,12 +24,38 @@ def generate_launch_description():
         output='screen'
     )
 
+    # DLIO SLAM launch
+    dlio_share = FindPackageShare('direct_lidar_inertial_odometry').find('direct_lidar_inertial_odometry')
+    dlio_launch = os.path.join(dlio_share, 'launch', 'dlio.launch.py')
+
+    # Telemtry node
+    telem_node = Node(
+        package='ragnarhorn_autonomy',
+        executable='telem_pub',
+        name='telemetry'
+    )
+
+
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(microstrain_launch)
         ),
+
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(livox_launch)
         ),
-        static_tf_node
+
+        static_tf_node,
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(dlio_launch),
+            launch_arguments={
+                'rviz': 'false',
+                'pointcloud_topic': '/livox/points',
+                'imu_topic': '/livox/imu'
+            }.items()
+        ),
+
+        telem_node,
+        
     ])

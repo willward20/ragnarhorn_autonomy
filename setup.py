@@ -27,6 +27,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'telem_pub = ragnarhorn_autonomy.telemetry:main',
         ],
     },
 )
